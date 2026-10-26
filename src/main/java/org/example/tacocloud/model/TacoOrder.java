@@ -1,16 +1,29 @@
 package org.example.tacocloud.model;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.hibernate.validator.constraints.CreditCardNumber;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
-public class TacoOrder {
+@Entity
+public class TacoOrder implements Serializable {
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private Date placedAt = new Date();
+
     @NotBlank(message = "Delivery name is required")
     private String deliveryName;
 
@@ -34,11 +47,19 @@ public class TacoOrder {
     private String ccExpiration;
 
     @Digits(integer = 3, fraction = 0, message = "Invalid CVV")
+    @Column(name = "cc_cvv")
     private String ccCVV;
 
+    @ManyToOne
+    private User user;
+
+    @OneToMany(mappedBy = "tacoOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Taco> tacos = new ArrayList<>();
 
     public void addTaco(Taco taco) {
+        taco.setTacoOrder(this);
         this.tacos.add(taco);
     }
 }

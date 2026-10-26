@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    generate-unique-name: false
+    name: tacocloud
+  jpa:
+    hibernate:
+      # schema.sql is the source of truth, so Hibernate must not recreate the tables
+      ddl-auto: none
+  sql:
+    init:
+      mode: always
+
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId:  Ov23litQ7MDZsmzMEbA7
+            clientSecret: a826cb2e1bd6c205bf63b65d1a4694b60c082aa8
+            scope: email, public_profile
